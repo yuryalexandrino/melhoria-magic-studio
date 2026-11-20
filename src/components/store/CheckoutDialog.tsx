@@ -24,7 +24,7 @@ function Field({
   label,
   error,
   ...props
-}: { label: string; error?: string } & InputHTMLAttributes<HTMLInputElement>) {
+}: { label: string; error?: string | undefined } & InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="flex flex-col gap-1 text-sm font-medium">
       {label}

@@ -161,7 +161,7 @@ export function toSettings(r: SettingsRow): StoreSettings {
 
 export function formatBRL(value: number | null | undefined): string | null {
   if (value === null || value === undefined || !Number.isFinite(value)) return null;
-  const [int, dec] = value.toFixed(2).split(".");
+  const [int = "0", dec = "00"] = value.toFixed(2).split(".");
   return `R$ ${int.replace(/\B(?=(\d{3})+(?!\d))/g, ".")},${dec}`;
 }
 

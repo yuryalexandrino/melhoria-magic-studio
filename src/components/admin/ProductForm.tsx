@@ -11,7 +11,7 @@ export type ProductDraft = Omit<Product, "id" | "createdAt" | "sortOrder"> & { i
 export const emptyDraft = (): ProductDraft => ({
   name: "",
   category: "fem",
-  subcategory: CATEGORIES.fem.lines[0],
+  subcategory: CATEGORIES.fem.lines[0] ?? "",
   price: null,
   promoPrice: null,
   tags: [],
@@ -81,17 +81,25 @@ export function ProductForm({
     const arr = [...d.images];
     const j = i + dir;
     if (j < 0 || j >= arr.length) return;
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    [arr[i], arr[j]] = [arr[j]!, arr[i]!];
     up("images", arr);
   };
 
   const submit = () => {
-    if (!d.name.trim()) return toast.error("Informe o nome do produto.");
+    if (!d.name.trim()) {
+      toast.error("Informe o nome do produto.");
+      return;
+    }
     const price = toNum(priceText);
     const promo = toNum(promoText);
-    if (price !== null && price < 0) return toast.error("Preço inválido.");
-    if (promo !== null && price !== null && promo >= price)
-      return toast.error("O preço promocional precisa ser menor que o preço normal.");
+    if (price !== null && price < 0) {
+      toast.error("Preço inválido.");
+      return;
+    }
+    if (promo !== null && price !== null && promo >= price) {
+      toast.error("O preço promocional precisa ser menor que o preço normal.");
+      return;
+    }
     const seen = new Set<string>();
     const sizes = d.sizes
       .map((s) => ({ size: s.size.trim(), qty: Math.max(0, Math.floor(s.qty || 0)) }))
@@ -118,7 +126,7 @@ export function ProductForm({
             value={d.category}
             onChange={(e) => {
               const c = e.target.value as CategoryKey;
-              setD((p) => ({ ...p, category: c, subcategory: CATEGORIES[c].lines[0] }));
+              setD((p) => ({ ...p, category: c, subcategory: CATEGORIES[c].lines[0] ?? "" }));
             }}
           >
             {CATEGORY_KEYS.map((k) => (

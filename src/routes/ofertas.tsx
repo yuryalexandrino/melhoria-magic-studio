@@ -5,8 +5,8 @@ import { catalogQuery, useCatalog } from "@/lib/queries";
 import { isOnSale, sortProducts, type SortKey } from "@/lib/store";
 
 export const Route = createFileRoute("/ofertas")({
-  validateSearch: (s: Record<string, unknown>): { ordem?: SortKey } => ({
-    ordem: s.ordem ? parseSort(s.ordem) : undefined,
+  validateSearch: (s: Record<string, unknown>): { ordem?: SortKey | undefined } => ({
+    ordem: s["ordem"] ? parseSort(s["ordem"]) : undefined,
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
   head: () => ({

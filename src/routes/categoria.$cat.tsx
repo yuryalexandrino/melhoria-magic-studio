@@ -5,9 +5,9 @@ import { catalogQuery, useCatalog } from "@/lib/queries";
 import { CATEGORIES, isCategory, sortProducts, type SortKey } from "@/lib/store";
 
 export const Route = createFileRoute("/categoria/$cat")({
-  validateSearch: (s: Record<string, unknown>): { linha?: string; ordem?: SortKey } => ({
-    linha: typeof s.linha === "string" && s.linha ? s.linha : undefined,
-    ordem: s.ordem ? parseSort(s.ordem) : undefined,
+  validateSearch: (s: Record<string, unknown>): { linha?: string | undefined; ordem?: SortKey | undefined } => ({
+    linha: typeof s["linha"] === "string" && s["linha"] ? s["linha"] : undefined,
+    ordem: s["ordem"] ? parseSort(s["ordem"]) : undefined,
   }),
   beforeLoad: ({ params }) => {
     if (!isCategory(params.cat)) throw notFound();

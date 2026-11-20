@@ -42,8 +42,10 @@ export function StoreTab() {
   });
 
   const submit = () => {
-    if (!isValidWhatsApp(s.whatsapp))
-      return toast.error("WhatsApp inválido. Use 55 + DDD + número, ex.: 5583910822400.");
+    if (!isValidWhatsApp(s.whatsapp)) {
+      toast.error("WhatsApp inválido. Use 55 + DDD + número, ex.: 558391082240.");
+      return;
+    }
     save.mutate();
   };
 
@@ -108,7 +110,7 @@ export function StoreTab() {
 
       <div className="space-y-4 rounded-3xl border border-border bg-card p-6">
         <h2 className="text-3xl">Contato e políticas</h2>
-        <F label="WhatsApp que recebe os pedidos" hint="Com 55 e DDD, só números. Ex.: 5583910822400">
+        <F label="WhatsApp que recebe os pedidos" hint="Com 55 e DDD, só números. Ex.: 558391082240">
           <input className={input} inputMode="numeric" value={s.whatsapp} onChange={up("whatsapp")} />
         </F>
         <F label="Instagram" hint="Sem o @">

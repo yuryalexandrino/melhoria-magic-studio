@@ -8,11 +8,11 @@ export function ProductImage({
   imgClassName,
   eager,
 }: {
-  src?: string;
+  src?: string | undefined;
   alt: string;
-  className?: string;
-  imgClassName?: string;
-  eager?: boolean;
+  className?: string | undefined;
+  imgClassName?: string | undefined;
+  eager?: boolean | undefined;
 }) {
   return (
     <div className={cn("relative overflow-hidden bg-blush", className)}>

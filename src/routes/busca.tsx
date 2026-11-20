@@ -5,9 +5,9 @@ import { catalogQuery, useCatalog } from "@/lib/queries";
 import { searchProducts, sortProducts, type SortKey } from "@/lib/store";
 
 export const Route = createFileRoute("/busca")({
-  validateSearch: (s: Record<string, unknown>): { q: string; ordem?: SortKey } => ({
-    q: typeof s.q === "string" ? s.q : "",
-    ordem: s.ordem ? parseSort(s.ordem) : undefined,
+  validateSearch: (s: Record<string, unknown>): { q: string; ordem?: SortKey | undefined } => ({
+    q: typeof s["q"] === "string" ? s["q"] : "",
+    ordem: s["ordem"] ? parseSort(s["ordem"]) : undefined,
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
   head: () => ({
