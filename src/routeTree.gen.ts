@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BuscaRouteImport } from './routes/busca'
+import { Route as OfertasRouteImport } from './routes/ofertas'
+import { Route as CategoriaCatRouteImport } from './routes/categoria.$cat'
+import { Route as InfoPageRouteImport } from './routes/info.$page'
+import { Route as ProdutoIdRouteImport } from './routes/produto.$id'
+import { Route as ApiPublicImagesSplatRouteImport } from './routes/api/public/images.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BuscaRoute = BuscaRouteImport.update({
+  id: '/busca',
+  path: '/busca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfertasRoute = OfertasRouteImport.update({
+  id: '/ofertas',
+  path: '/ofertas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriaCatRoute = CategoriaCatRouteImport.update({
+  id: '/categoria/$cat',
+  path: '/categoria/$cat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InfoPageRoute = InfoPageRouteImport.update({
+  id: '/info/$page',
+  path: '/info/$page',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProdutoIdRoute = ProdutoIdRouteImport.update({
+  id: '/produto/$id',
+  path: '/produto/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicImagesSplatRoute = ApiPublicImagesSplatRouteImport.update({
+  id: '/api/public/images/$',
+  path: '/api/public/images/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/busca': typeof BuscaRoute
+  '/ofertas': typeof OfertasRoute
+  '/categoria/$cat': typeof CategoriaCatRoute
+  '/info/$page': typeof InfoPageRoute
+  '/produto/$id': typeof ProdutoIdRoute
+  '/api/public/images/$': typeof ApiPublicImagesSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/busca': typeof BuscaRoute
+  '/ofertas': typeof OfertasRoute
+  '/categoria/$cat': typeof CategoriaCatRoute
+  '/info/$page': typeof InfoPageRoute
+  '/produto/$id': typeof ProdutoIdRoute
+  '/api/public/images/$': typeof ApiPublicImagesSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/busca': typeof BuscaRoute
+  '/ofertas': typeof OfertasRoute
+  '/categoria/$cat': typeof CategoriaCatRoute
+  '/info/$page': typeof InfoPageRoute
+  '/produto/$id': typeof ProdutoIdRoute
+  '/api/public/images/$': typeof ApiPublicImagesSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/busca'
+    | '/ofertas'
+    | '/categoria/$cat'
+    | '/info/$page'
+    | '/produto/$id'
+    | '/api/public/images/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/busca'
+    | '/ofertas'
+    | '/categoria/$cat'
+    | '/info/$page'
+    | '/produto/$id'
+    | '/api/public/images/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/busca'
+    | '/ofertas'
+    | '/categoria/$cat'
+    | '/info/$page'
+    | '/produto/$id'
+    | '/api/public/images/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BuscaRoute: typeof BuscaRoute
+  OfertasRoute: typeof OfertasRoute
+  CategoriaCatRoute: typeof CategoriaCatRoute
+  InfoPageRoute: typeof InfoPageRoute
+  ProdutoIdRoute: typeof ProdutoIdRoute
+  ApiPublicImagesSplatRoute: typeof ApiPublicImagesSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/busca': {
+      id: '/busca'
+      path: '/busca'
+      fullPath: '/busca'
+      preLoaderRoute: typeof BuscaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ofertas': {
+      id: '/ofertas'
+      path: '/ofertas'
+      fullPath: '/ofertas'
+      preLoaderRoute: typeof OfertasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categoria/$cat': {
+      id: '/categoria/$cat'
+      path: '/categoria/$cat'
+      fullPath: '/categoria/$cat'
+      preLoaderRoute: typeof CategoriaCatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/info/$page': {
+      id: '/info/$page'
+      path: '/info/$page'
+      fullPath: '/info/$page'
+      preLoaderRoute: typeof InfoPageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/produto/$id': {
+      id: '/produto/$id'
+      path: '/produto/$id'
+      fullPath: '/produto/$id'
+      preLoaderRoute: typeof ProdutoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/images/$': {
+      id: '/api/public/images/$'
+      path: '/api/public/images/$'
+      fullPath: '/api/public/images/$'
+      preLoaderRoute: typeof ApiPublicImagesSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BuscaRoute: BuscaRoute,
+  OfertasRoute: OfertasRoute,
+  CategoriaCatRoute: CategoriaCatRoute,
+  InfoPageRoute: InfoPageRoute,
+  ProdutoIdRoute: ProdutoIdRoute,
+  ApiPublicImagesSplatRoute: ApiPublicImagesSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
