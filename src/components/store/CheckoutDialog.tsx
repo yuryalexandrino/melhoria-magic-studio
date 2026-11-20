@@ -13,6 +13,7 @@ import {
   deliveryErrors,
   formatBRL,
   whatsappLink,
+  validateBagStock,
   type DeliveryInfo,
   type Product,
 } from "@/lib/store";
@@ -53,6 +54,7 @@ export function CheckoutDialog({ products, whatsapp }: { products: Product[]; wh
   }, []);
 
   const lines = bagLines(items, products);
+  const stockIssues = validateBagStock(lines);
   const { total } = bagTotals(lines);
   const errors = deliveryErrors(d);
   const valid = Object.keys(errors).length === 0;
@@ -167,6 +169,11 @@ export function CheckoutDialog({ products, whatsapp }: { products: Product[]; wh
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => {
+                  if (stockIssues.length) {
+                    e.preventDefault();
+                    toast.error(stockIssues[0]);
+                    return;
+                  }
                   if (!valid || !lines.length) {
                     e.preventDefault();
                     setTried(true);
