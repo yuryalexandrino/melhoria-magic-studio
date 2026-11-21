@@ -73,9 +73,9 @@ function Home() {
               <ProductImage src={settings.bannerUrl} alt="Destaque da Rafaela Shoes" eager className="arch aspect-[4/5] shadow-lift" />
             ) : collage.length >= 3 ? (
               <div className="grid grid-cols-2 gap-3">
-                <ProductImage src={collage[0].images[0]} alt={collage[0].name} eager className="arch row-span-2 aspect-[1/2] shadow-lift" />
-                <ProductImage src={collage[1].images[0]} alt={collage[1].name} eager className="aspect-square rounded-3xl" />
-                <ProductImage src={collage[2].images[0]} alt={collage[2].name} eager className="aspect-square rounded-[999px_999px_1.5rem_999px]" />
+                <ProductImage src={collage[0]!.images[0]} alt={collage[0]!.name} eager className="arch row-span-2 aspect-[1/2] shadow-lift" />
+                <ProductImage src={collage[1]!.images[0]} alt={collage[1]!.name} eager className="aspect-square rounded-3xl" />
+                <ProductImage src={collage[2]!.images[0]} alt={collage[2]!.name} eager className="aspect-square rounded-[999px_999px_1.5rem_999px]" />
               </div>
             ) : (
               <div className="arch grid aspect-[4/5] place-items-center bg-blush">

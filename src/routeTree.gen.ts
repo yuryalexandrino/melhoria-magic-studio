@@ -10,8 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BuscaRouteImport } from './routes/busca'
 import { Route as OfertasRouteImport } from './routes/ofertas'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 import { Route as CategoriaCatRouteImport } from './routes/categoria.$cat'
 import { Route as InfoPageRouteImport } from './routes/info.$page'
 import { Route as ProdutoIdRouteImport } from './routes/produto.$id'
@@ -20,6 +24,15 @@ import { Route as ApiPublicImagesSplatRouteImport } from './routes/api/public/im
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuscaRoute = BuscaRouteImport.update({
@@ -31,6 +44,16 @@ const OfertasRoute = OfertasRouteImport.update({
   id: '/ofertas',
   path: '/ofertas',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const CategoriaCatRoute = CategoriaCatRouteImport.update({
   id: '/categoria/$cat',
@@ -55,8 +78,11 @@ const ApiPublicImagesSplatRoute = ApiPublicImagesSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/busca': typeof BuscaRoute
   '/ofertas': typeof OfertasRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/painel': typeof AuthenticatedPainelRoute
   '/categoria/$cat': typeof CategoriaCatRoute
   '/info/$page': typeof InfoPageRoute
   '/produto/$id': typeof ProdutoIdRoute
@@ -64,8 +90,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/busca': typeof BuscaRoute
   '/ofertas': typeof OfertasRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/painel': typeof AuthenticatedPainelRoute
   '/categoria/$cat': typeof CategoriaCatRoute
   '/info/$page': typeof InfoPageRoute
   '/produto/$id': typeof ProdutoIdRoute
@@ -74,8 +103,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/busca': typeof BuscaRoute
   '/ofertas': typeof OfertasRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/painel': typeof AuthenticatedPainelRoute
   '/categoria/$cat': typeof CategoriaCatRoute
   '/info/$page': typeof InfoPageRoute
   '/produto/$id': typeof ProdutoIdRoute
@@ -85,8 +118,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/busca'
     | '/ofertas'
+    | '/reset-password'
+    | '/painel'
     | '/categoria/$cat'
     | '/info/$page'
     | '/produto/$id'
@@ -94,8 +130,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/busca'
     | '/ofertas'
+    | '/reset-password'
+    | '/painel'
     | '/categoria/$cat'
     | '/info/$page'
     | '/produto/$id'
@@ -103,8 +142,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
     | '/busca'
     | '/ofertas'
+    | '/reset-password'
+    | '/_authenticated/painel'
     | '/categoria/$cat'
     | '/info/$page'
     | '/produto/$id'
@@ -113,8 +156,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   BuscaRoute: typeof BuscaRoute
   OfertasRoute: typeof OfertasRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   CategoriaCatRoute: typeof CategoriaCatRoute
   InfoPageRoute: typeof InfoPageRoute
   ProdutoIdRoute: typeof ProdutoIdRoute
@@ -130,6 +176,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/busca': {
       id: '/busca'
       path: '/busca'
@@ -143,6 +203,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/ofertas'
       preLoaderRoute: typeof OfertasRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/painel': {
+      id: '/_authenticated/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof AuthenticatedPainelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/categoria/$cat': {
       id: '/categoria/$cat'
@@ -175,10 +249,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedPainelRoute: AuthenticatedPainelRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   BuscaRoute: BuscaRoute,
   OfertasRoute: OfertasRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   CategoriaCatRoute: CategoriaCatRoute,
   InfoPageRoute: InfoPageRoute,
   ProdutoIdRoute: ProdutoIdRoute,

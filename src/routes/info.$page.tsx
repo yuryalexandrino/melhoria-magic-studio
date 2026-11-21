@@ -36,6 +36,7 @@ function InfoPage() {
   const { page } = Route.useParams();
   const { settings } = useCatalog();
   const p = PAGES[page];
+  if (!p) throw notFound();
   return (
     <StoreShell>
       <PageHero eyebrow="A loja" title={p.title} />

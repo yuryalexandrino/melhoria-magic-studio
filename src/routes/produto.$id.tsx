@@ -57,7 +57,7 @@ function ProductView({ id }: { id: string }) {
   const { add, setOpen, setCheckoutOpen } = useBag();
   const [img, setImg] = useState(0);
   const [size, setSize] = useState("");
-  const [color, setColor] = useState(product.colors.length === 1 ? product.colors[0] : "");
+  const [color, setColor] = useState(product.colors.length === 1 ? (product.colors[0] ?? "") : "");
   const [qty, setQty] = useState(1);
   const [warn, setWarn] = useState(false);
 
