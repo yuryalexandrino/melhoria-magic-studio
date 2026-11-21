@@ -210,6 +210,16 @@ export function stockFor(p: Pick<Product, "sizes">, size: string): number | null
   return p.sizes.find((s) => s.size === size)?.qty ?? 0;
 }
 
+/** Returns cart lines whose requested quantity is no longer available. */
+export function validateBagStock(lines: BagLine[]): string[] {
+  return lines.flatMap((line) => {
+    const available = stockFor(line.product, line.size);
+    if (available === null || line.qty <= available) return [];
+    const sizeLabel = line.size ? ` (nº ${line.size})` : "";
+    return [`${line.product.name}${sizeLabel}: disponível ${available}, solicitado ${line.qty}.`];
+  });
+}
+
 /* ---------- bag and order ---------- */
 
 export type BagItem = { productId: string; size: string; color: string; qty: number };
