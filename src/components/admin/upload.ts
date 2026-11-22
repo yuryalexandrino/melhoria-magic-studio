@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
+import { IMAGE_BUCKET, imageUrlFor, storagePathFromUrl, type ImageFolder } from "@/lib/images";
 
-const BUCKET = "product-images";
-export const IMAGE_ROUTE = "/api/public/images/";
+export { IMAGE_ROUTE } from "@/lib/images";
 
 /** Shrinks a photo in the browser (max side `max` px) before upload. */
 async function shrink(file: File, max: number): Promise<Blob> {
@@ -24,15 +24,15 @@ async function shrink(file: File, max: number): Promise<Blob> {
   }
 }
 
-export async function uploadPhoto(file: File, folder: "products" | "banner", max = 1400): Promise<string> {
+export async function uploadPhoto(file: File, folder: ImageFolder, max = 1400): Promise<string> {
   const blob = await shrink(file, max);
   const path = `${folder}/${crypto.randomUUID()}.jpg`;
-  const { error } = await supabase.storage.from(BUCKET).upload(path, blob, { contentType: "image/jpeg", upsert: false });
+  const { error } = await supabase.storage.from(IMAGE_BUCKET).upload(path, blob, { contentType: "image/jpeg", upsert: false });
   if (error) throw error;
-  return IMAGE_ROUTE + path;
+  return imageUrlFor(path);
 }
 
 export async function deleteUploadedPhotos(urls: string[]) {
-  const paths = urls.filter((u) => u.startsWith(IMAGE_ROUTE)).map((u) => u.slice(IMAGE_ROUTE.length));
-  if (paths.length) await supabase.storage.from(BUCKET).remove(paths);
+  const paths = urls.flatMap((u) => storagePathFromUrl(u) ?? []);
+  if (paths.length) await supabase.storage.from(IMAGE_BUCKET).remove(paths);
 }
