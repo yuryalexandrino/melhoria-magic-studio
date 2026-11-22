@@ -109,6 +109,7 @@ function AuthPage() {
                 type="email"
                 required
                 placeholder="E-mail"
+                aria-label="E-mail da conta"
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -119,6 +120,7 @@ function AuthPage() {
                   type="password"
                   required
                   placeholder="Senha"
+                  aria-label="Senha da conta"
                   autoComplete={creating ? "new-password" : "current-password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
