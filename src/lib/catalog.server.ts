@@ -3,8 +3,10 @@ import type { Database } from "@/integrations/supabase/types";
 
 /** Read-only client with the public key, for shop pages rendered on the server. */
 export function publicSupabase() {
-  const url = process.env["SUPABASE_URL"]!;
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
+  // Em hospedagens como a Vercel, SUPABASE_* pode não existir em runtime;
+  // as variáveis VITE_* são embutidas no build e servem de alternativa.
+  const url = (process.env["SUPABASE_URL"] ?? import.meta.env["VITE_SUPABASE_URL"]) as string;
+  const key = (process.env["SUPABASE_PUBLISHABLE_KEY"] ?? import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"]) as string;
   return createClient<Database>(url, key, {
     auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
     global: {
