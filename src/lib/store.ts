@@ -278,14 +278,26 @@ export function deliveryErrors(d: DeliveryInfo): Partial<Record<keyof DeliveryIn
   return e;
 }
 
-export function buildOrderMessage(lines: BagLine[], d: DeliveryInfo): string {
+/** Resolve storefront photos into shareable links; never include inline data or unsafe schemes. */
+export function orderPhotoUrl(src: string | undefined, siteUrl?: string): string | null {
+  if (!src?.trim()) return null;
+  try {
+    const url = siteUrl ? new URL(src, siteUrl) : new URL(src);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+export function buildOrderMessage(lines: BagLine[], d: DeliveryInfo, siteUrl?: string): string {
   const items = lines.map((l, i) => {
     const parts = [`${i + 1}. ${l.product.name}`];
     if (needsSize(l.product)) parts.push(`Nº ${l.size || "a confirmar"}`);
     if (l.color) parts.push(`Cor ${l.color}`);
     parts.push(`${l.qty}x`);
     parts.push(formatBRL(effectivePrice(l.product)) ?? "preço a consultar");
-    return parts.join(" | ");
+    const photo = orderPhotoUrl(l.product.images[0], siteUrl);
+    return `${parts.join(" | ")}${photo ? `\nFoto: ${photo}` : ""}`;
   });
   const { total, unpriced } = bagTotals(lines);
   const out = [

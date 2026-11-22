@@ -28,3 +28,5 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- WhatsApp checkout shares each product's primary photo as an HTTP(S) URL resolved against the hydrated storefront origin; wa.me supports text links, not automatic image attachments.

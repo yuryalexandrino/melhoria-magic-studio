@@ -5,6 +5,8 @@ import {
   EMPTY_DELIVERY,
   effectivePrice,
   discountPercent,
+  orderPhotoUrl,
+  whatsappLink,
   type BagLine,
   type Product,
 } from "@/lib/store";
@@ -51,6 +53,26 @@ describe("store pricing rules", () => {
 });
 
 describe("delivery and WhatsApp order message", () => {
+  it("includes each purchased product's photo link, resolving uploaded photos against the storefront", () => {
+    const first = { ...orderLine, product: { ...product, images: ["/api/public/images/shoe-1.jpg"] } };
+    const second = { ...orderLine, productId: "shoe-2", product: { ...product, id: "shoe-2", images: ["https://photos.example.com/shoe-2.jpg"] } };
+    const message = buildOrderMessage([first, second], EMPTY_DELIVERY, "https://rafaela.example.com");
+    expect(message).toContain("https://rafaela.example.com/api/public/images/shoe-1.jpg");
+    expect(message).toContain("https://photos.example.com/shoe-2.jpg");
+    expect(new URL(whatsappLink("558391082240", message)).searchParams.get("text")).toBe(message);
+  });
+
+  it("keeps products without photos in the order without adding a broken link", () => {
+    expect(buildOrderMessage([orderLine], EMPTY_DELIVERY, "https://rafaela.example.com")).not.toContain("Foto:");
+    expect(buildOrderMessage([orderLine], EMPTY_DELIVERY)).toContain("Tênis Casual");
+  });
+
+  it("rejects inline images and unsafe photo URLs", () => {
+    expect(orderPhotoUrl("data:image/jpeg;base64,abc", "https://rafaela.example.com")).toBeNull();
+    expect(orderPhotoUrl("javascript:alert(1)", "https://rafaela.example.com")).toBeNull();
+    expect(orderPhotoUrl("/api/public/images/shoe.jpg")).toBeNull();
+  });
+
   it("requires the delivery recipient and address fields", () => {
     expect(deliveryErrors(EMPTY_DELIVERY)).toEqual({
       name: "Informe seu nome",

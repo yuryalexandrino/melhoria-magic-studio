@@ -43,8 +43,10 @@ export function CheckoutDialog({ products, whatsapp }: { products: Product[]; wh
   const [d, setD] = useState<DeliveryInfo>(EMPTY_DELIVERY);
   const [tried, setTried] = useState(false);
   const [sent, setSent] = useState<{ message: string; url: string } | null>(null);
+  const [siteUrl, setSiteUrl] = useState<string>();
 
   useEffect(() => {
+    setSiteUrl(window.location.origin);
     try {
       const raw = localStorage.getItem(ADDRESS_KEY);
       if (raw) setD({ ...EMPTY_DELIVERY, ...JSON.parse(raw), notes: "" });
@@ -58,7 +60,7 @@ export function CheckoutDialog({ products, whatsapp }: { products: Product[]; wh
   const { total } = bagTotals(lines);
   const errors = deliveryErrors(d);
   const valid = Object.keys(errors).length === 0;
-  const message = buildOrderMessage(lines, d);
+  const message = buildOrderMessage(lines, d, siteUrl);
   const url = whatsappLink(whatsapp, message);
   const set = (k: keyof DeliveryInfo) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setD((p) => ({ ...p, [k]: e.target.value }));
