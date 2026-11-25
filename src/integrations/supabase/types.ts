@@ -68,6 +68,161 @@ export type Database = {
         }
         Relationships: []
       }
+      sales_order_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          id: string
+          order_id: string
+          status: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          order_id: string
+          status: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_order_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "sales_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_order_items: {
+        Row: {
+          color: string
+          created_at: string
+          description: string
+          id: string
+          image: string
+          inventory_quantity: number
+          inventory_restored: boolean
+          name: string
+          needs_size: boolean
+          order_id: string
+          product_id: string | null
+          quantity: number
+          size: string
+          unit_price: number | null
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          image?: string
+          inventory_quantity?: number
+          inventory_restored?: boolean
+          name: string
+          needs_size?: boolean
+          order_id: string
+          product_id?: string | null
+          quantity: number
+          size?: string
+          unit_price?: number | null
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          image?: string
+          inventory_quantity?: number
+          inventory_restored?: boolean
+          name?: string
+          needs_size?: boolean
+          order_id?: string
+          product_id?: string | null
+          quantity?: number
+          size?: string
+          unit_price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "sales_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_orders: {
+        Row: {
+          cancelled_at: string | null
+          confirmed_at: string | null
+          created_at: string
+          delivery: Json
+          id: string
+          idempotency_key: string
+          notes: string
+          number: number
+          payment_method: string
+          request_hash: string
+          shipping: number | null
+          source_hash: string
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          delivery: Json
+          id?: string
+          idempotency_key: string
+          notes?: string
+          number?: never
+          payment_method: string
+          request_hash: string
+          shipping?: number | null
+          source_hash: string
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          delivery?: Json
+          id?: string
+          idempotency_key?: string
+          notes?: string
+          number?: never
+          payment_method?: string
+          request_hash?: string
+          shipping?: number | null
+          source_hash?: string
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       store_settings: {
         Row: {
           about: string
@@ -139,12 +294,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_sales_order: {
+        Args: {
+          p_delivery: Json
+          p_hash: string
+          p_items: Json
+          p_key: string
+          p_source: string
+        }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      manage_sales_order: {
+        Args: {
+          p_order: string
+          p_prices?: Json
+          p_shipping?: number
+          p_status: string
+        }
+        Returns: undefined
       }
       store_has_owner: { Args: never; Returns: boolean }
     }

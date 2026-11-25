@@ -30,3 +30,6 @@ use the editor.
 <!-- LOVABLE:END -->
 
 - WhatsApp checkout shares each product's primary photo as an HTTP(S) URL resolved against the hydrated storefront origin; wa.me supports text links, not automatic image attachments.
+- Orders are created through a validated public server function and a service-role-only transactional RPC; browser clients never supply prices or read guest orders.
+- Order status, pricing and inventory changes use an admin-authorized transactional RPC with row locks and an item-level inventory ledger to prevent duplicate deductions/restorations.
+- Sales analytics use confirmed timestamps in the store's UTC-3 calendar; pending/cancelled orders never contribute revenue, and order snapshots remain independent of catalog edits.
