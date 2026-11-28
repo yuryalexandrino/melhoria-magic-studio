@@ -1,4 +1,6 @@
-import { Check, Copy, Truck } from "lucide-react";
+import { Check, Copy, Loader2, Truck } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { createOrder } from "@/lib/orders/orders.functions";
 import { useEffect, useState, type ChangeEvent, type InputHTMLAttributes } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -9,7 +11,6 @@ import {
   PAYMENT_METHODS,
   bagLines,
   bagTotals,
-  buildOrderMessage,
   deliveryErrors,
   formatBRL,
   whatsappLink,
@@ -44,6 +45,9 @@ export function CheckoutDialog({ products, whatsapp }: { products: Product[]; wh
   const [tried, setTried] = useState(false);
   const [sent, setSent] = useState<{ message: string; url: string } | null>(null);
   const [siteUrl, setSiteUrl] = useState<string>();
+  const [orderKey, setOrderKey] = useState(() => crypto.randomUUID());
+  const [busy, setBusy] = useState(false);
+  const submitOrder = useServerFn(createOrder);
 
   useEffect(() => {
     setSiteUrl(window.location.origin);
@@ -60,8 +64,6 @@ export function CheckoutDialog({ products, whatsapp }: { products: Product[]; wh
   const { total } = bagTotals(lines);
   const errors = deliveryErrors(d);
   const valid = Object.keys(errors).length === 0;
-  const message = buildOrderMessage(lines, d, siteUrl);
-  const url = whatsappLink(whatsapp, message);
   const set = (k: keyof DeliveryInfo) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setD((p) => ({ ...p, [k]: e.target.value }));
 
@@ -165,35 +167,52 @@ export function CheckoutDialog({ products, whatsapp }: { products: Product[]; wh
               </span>
               <span className="text-xl font-semibold">{formatBRL(total)}</span>
             </div>
-            <Button asChild variant="whatsapp" size="xl" className="w-full">
-              <a
-                href={valid && lines.length ? url : "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => {
-                  if (stockIssues.length) {
-                    e.preventDefault();
-                    toast.error(stockIssues[0]);
-                    return;
+            <Button
+              variant="whatsapp"
+              size="xl"
+              className="w-full"
+              disabled={busy}
+              onClick={async () => {
+                if (stockIssues.length) return void toast.error(stockIssues[0]);
+                if (!valid || !lines.length) {
+                  setTried(true);
+                  return void toast.error("Preencha os dados de entrega.");
+                }
+                const win = window.open("", "_blank");
+                setBusy(true);
+                try {
+                  const res = await submitOrder({
+                    data: {
+                      key: orderKey,
+                      delivery: d,
+                      items: items.map((i) => ({ productId: i.productId, size: i.size, color: i.color, qty: i.qty })),
+                    },
+                  });
+                  if (!res.ok) {
+                    win?.close();
+                    return void toast.error(res.error);
                   }
-                  if (!valid || !lines.length) {
-                    e.preventDefault();
-                    setTried(true);
-                    toast.error("Preencha os dados de entrega.");
-                    return;
-                  }
+                  const finalUrl = whatsappLink(whatsapp, res.message);
+                  if (win) win.location.href = finalUrl;
+                  else window.location.href = finalUrl;
                   try {
                     const { notes: _n, ...keep } = d;
                     localStorage.setItem(ADDRESS_KEY, JSON.stringify(keep));
                   } catch {
                     /* ignore */
                   }
-                  setSent({ message, url });
+                  setSent({ message: res.message, url: finalUrl });
+                  setOrderKey(crypto.randomUUID());
                   clear();
-                }}
-              >
-                <WhatsAppIcon className="size-5" /> Enviar pedido pelo WhatsApp
-              </a>
+                } catch {
+                  win?.close();
+                  toast.error("Não foi possível registrar o pedido. Tente novamente.");
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              {busy ? <Loader2 className="size-5 animate-spin" /> : <WhatsAppIcon className="size-5" />} Enviar pedido pelo WhatsApp
             </Button>
           </>
         )}

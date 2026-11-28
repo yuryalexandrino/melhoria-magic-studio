@@ -4,6 +4,7 @@ import { Loader2, LogOut, Pencil, Plus, Store, Trash2 } from "lucide-react";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { ProductForm, emptyDraft, type ProductDraft } from "@/components/admin/ProductForm";
+import { SalesTab } from "@/components/admin/SalesTab";
 import { StoreTab } from "@/components/admin/StoreTab";
 import { adminProductsQuery, draftToRow, isOwnerQuery } from "@/components/admin/data";
 import { Logo } from "@/components/store/Header";
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/_authenticated/painel")({
 function PanelPage() {
   const { user } = Route.useRouteContext();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"produtos" | "loja">("produtos");
+  const [tab, setTab] = useState<"vendas" | "produtos" | "loja">("vendas");
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -77,7 +78,7 @@ function PanelPage() {
   );
 }
 
-function OwnerGate({ userId, tab, setTab }: { userId: string; tab: "produtos" | "loja"; setTab: (t: "produtos" | "loja") => void }) {
+function OwnerGate({ userId, tab, setTab }: { userId: string; tab: "vendas" | "produtos" | "loja"; setTab: (t: "vendas" | "produtos" | "loja") => void }) {
   const { data: isOwner } = useSuspenseQuery(isOwnerQuery(userId));
 
   if (!isOwner) {
@@ -93,9 +94,10 @@ function OwnerGate({ userId, tab, setTab }: { userId: string; tab: "produtos" | 
 
   return (
     <>
-      <div className="mb-8 flex gap-2">
+      <div className="mb-8 flex flex-wrap gap-2">
         {(
           [
+            ["vendas", "Dashboard"],
             ["produtos", "Produtos"],
             ["loja", "Informações da loja"],
           ] as const
@@ -112,7 +114,7 @@ function OwnerGate({ userId, tab, setTab }: { userId: string; tab: "produtos" | 
           </button>
         ))}
       </div>
-      {tab === "produtos" ? <ProductsTab /> : <StoreTab />}
+      {tab === "vendas" ? <SalesTab /> : tab === "produtos" ? <ProductsTab /> : <StoreTab />}
     </>
   );
 }
